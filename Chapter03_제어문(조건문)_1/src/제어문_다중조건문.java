@@ -7,7 +7,7 @@ public class 제어문_다중조건문 {
 		Scanner scan=new Scanner(System.in);
 		System.out.println("인덱스 번호 입력:");
 		
-		int index=scan.nextInt();
+		int index=scan.nextInt();    
 		
 		if(index==1) {
 			Runtime.getRuntime().exec("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe http://www.daum.net");
