@@ -5,11 +5,16 @@ public class Oracleeee {
 	public static void main(String[] args) throws Exception{
 		// TODO Auto-generated method stub
 		// 드라이버 설정
-		Class.forName("oracle.jdbc.dirver.OracleDriver");
+		try {
+			
+		}catch(Exception ex) {
+			System.out.println("errrrrrr");
+		}
+		Class.forName("oracle.jdbc.driver.OracleDriver");
 		// ojdbc8.jar
 		// 오라클 연결
 		String url="jdbc:oracle:thin:@localhost:1521:XE";
-		Connection conn=DriverManager.getConnection(url,"hr","hapyy");
+		Connection conn=DriverManager.getConnection(url,"hr","happy");
 		// conn hr/happy
 		String sql="SELECT * FROM emp";
 		// 오라클 => SQL문장 전송
