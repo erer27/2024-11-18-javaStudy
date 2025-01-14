@@ -2,6 +2,24 @@ package com.sist.dao;
 import java.util.*;
 import java.sql.*;
 import com.sist.vo.*;
+/*
+ *    FNO                                                NUMBER(38)
+ NAME                                               VARCHAR2(4000)
+ TYPE                                               VARCHAR2(4000)
+ PHONE                                              VARCHAR2(26)
+ ADDRESS                                            VARCHAR2(4000)
+ SCORE                                              NUMBER(38,1)
+ THEME                                              VARCHAR2(4000)
+ POSTER                                             VARCHAR2(4000)
+ IMAGES                                             VARCHAR2(4000)
+ TIME                                               VARCHAR2(128)
+ PARKING                                            VARCHAR2(128)
+ CONTENT                                            VARCHAR2(4000)
+ RDAYS                                              VARCHAR2(26)
+ JJIMCOUNT                                          NUMBER(38)
+ LIKECOUNT                                          NUMBER(38)
+ HIT                                                NUMBER(38)
+ */
 public class FreeBoardDAO {
    // 오라클 연결 객체 
    private Connection conn;
@@ -73,8 +91,8 @@ public class FreeBoardDAO {
 				     +"FROM (SELECT no,subject,name,regdate,hit "
 				     +"FROM freeboard ORDER BY no DESC)) "
 				     +"WHERE num BETWEEN ? AND ?";
-		   // 페이지 나누는 방법 => 인라인뷰 => rownum
-		   // => rownum은 중간에 자를 수 없다
+		   // 페이지 나누는 방법 =>  인라인뷰 => rownum 
+		   // => rownum은 중간에 자를 수 없다 
 		   ps=conn.prepareStatement(sql); 
 		   // 실행전에 ?에 값을 채운다 
 		   int rowSize=10;
@@ -119,7 +137,7 @@ public class FreeBoardDAO {
 	   {
 		   getConnection();
 		   String sql="SELECT CEIL(COUNT(*)/10.0) FROM freeboard";
-		   // 총페이지 구하기 --------------------------------------
+		   // 총페이지 구하기    --------------------
 		   ps=conn.prepareStatement(sql);
 		   ResultSet rs=ps.executeQuery();
 		   rs.next();
@@ -142,7 +160,7 @@ public class FreeBoardDAO {
 	   FreeBoardVO vo=new FreeBoardVO();
 	   try
 	   {
-		   // 한 개의 기능 수행시 => SQL문장 여러개를 한번에 처리가 가능하다
+		   // 한개의 기능 수행시 => SQL문장 여러개를 합번에 처리가 가능하다 
 		   // 서브쿼리는 SELECT
 		   // 연결 
 		   getConnection();
@@ -196,6 +214,9 @@ public class FreeBoardDAO {
 	   {
 		   getConnection();
 		   // hit=0 , regdate=SYSDATE
+		   // PRIMARY KEY => 자동 증가번호 
+		   // SELECT MAX()+1
+		   // SEQUENCE : fb_no_seq.nextval
 		   String sql="INSERT INTO freeboard(no,name,subject,content,pwd) "
 				     +"VALUES(fb_no_seq.nextval,?,?,?,?)";
 		   ps=conn.prepareStatement(sql);
@@ -216,7 +237,122 @@ public class FreeBoardDAO {
 	   }
    }
    // 4. 수정 => UPDATE => 비밀번호 검사  
+   // 1) 수정 데이터읽기 (이전)
+   public FreeBoardVO boardUpdateData(int no)
+   {
+	   // 한개의 게시물 읽기 / 맛집 / 상품 / 영화 => PRIMARY KEY 
+	   FreeBoardVO vo=new FreeBoardVO();
+	   // vo는 게시물 한개에 대한 모든 데이터를 가지고 있다 
+	   // 한개 찾기 => VO => 중복없는 데이터 
+	   // 여러개 찾기 (검색) => List<VO> => 검색어 => LIKE
+	   try
+	   {
+		   getConnection();
+		   String sql="SELECT no,name,subject,content "
+				     +"FROM freeboard "
+				     +"WHERE no="+no;
+		   ps=conn.prepareStatement(sql);
+		   ResultSet rs=ps.executeQuery();
+		   rs.next();
+		   vo.setNo(rs.getInt(1));
+		   vo.setName(rs.getString(2));
+		   vo.setSubject(rs.getString(3));
+		   vo.setContent(rs.getString(4));
+		   rs.close();
+	   }catch(Exception ex)
+	   {
+		   ex.printStackTrace();
+	   }
+	   finally
+	   {
+		   disConnection();
+	   }
+	   return vo;
+	   
+	   
+   }
+   // 2) 실제 수정 
+   public boolean boardUpdate(FreeBoardVO vo)
+   {
+	   boolean bCheck=false;
+	   try
+	   {
+		   //1. 연결
+		   getConnection();
+		   //2. SQL => 비밀번호 읽기 
+		   String sql="SELECT pwd FROM freeboard "
+				     +"WHERE no="+vo.getNo();
+		   ps=conn.prepareStatement(sql);
+		   ResultSet rs=ps.executeQuery();
+		   rs.next();
+		   String db_pwd=rs.getString(1);
+		   rs.close();
+		   
+		   if(db_pwd.equals(vo.getPwd()))
+		   {
+			  bCheck=true;
+			  sql="UPDATE freeboard SET "
+			     +"name=?,subject=?,content=? "
+				 +"WHERE no=?";
+			  ps=conn.prepareStatement(sql);
+			  ps.setString(1, vo.getName()); // ''
+			  ps.setString(2, vo.getSubject());
+			  ps.setString(3, vo.getContent());
+			  ps.setInt(4, vo.getNo());
+			  
+			  // 실행 
+			  ps.executeUpdate();
+			     
+			     
+		   }
+	   }catch(Exception ex)
+	   {
+		   ex.printStackTrace();
+	   }
+	   finally
+	   {
+		   disConnection();
+	   }
+	   return bCheck;
+   }
    // 5. 삭제 => DELETE => 비밀번호 검사 
+   public boolean boardDelete(int no,String pwd)
+   {
+	   boolean bCheck=false;
+	   try
+	   {
+		   // 1. 연결
+		   getConnection();
+		   // 2. SQL문장 제작 
+		   String sql="SELECT pwd FROM freeboard "
+				     +"WHERE no="+no;
+		   // SQL문장 전송 
+		   ps=conn.prepareStatement(sql);
+		   // 결과값 가지고 오기
+		   ResultSet rs=ps.executeQuery();
+		   rs.next();
+		   String db_pwd=rs.getString(1);
+		   rs.close();
+		   
+		   if(db_pwd.equals(pwd))
+		   {
+			  bCheck=true;
+			  sql="DELETE FROM freeboard "
+				 +"WHERE no="+no;
+			  ps=conn.prepareStatement(sql);
+			  ps.executeUpdate();
+		   }
+		   
+	   }catch(Exception ex)
+	   {
+		   ex.printStackTrace();
+	   }
+	   finally
+	   {
+		   disConnection();
+	   }
+	   return bCheck;
+   }
    // 6. 찾기 => LIKE 문장 사용 
    public List<FreeBoardVO> boardFindData(String col,String fd)
    {
@@ -286,5 +422,8 @@ public class FreeBoardDAO {
 	   return count;
    }
    // -------------------------------- CRUD 
+   /*
+    *    
+    */
    
 }

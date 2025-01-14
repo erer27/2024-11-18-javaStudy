@@ -59,6 +59,11 @@ implements ActionListener,MouseListener
     	// 실제 삭제
     	bDelete.b1.addActionListener(this);// 삭제
     	bDelete.b2.addActionListener(this);// 취소
+    	
+    	// 수정 
+    	bUpdate.b1.addActionListener(this);// 수정
+    	bUpdate.b2.addActionListener(this);// 취소
+    	
     }
     public void listPrint()
     {
@@ -87,8 +92,25 @@ implements ActionListener,MouseListener
     	totalpage=dao.boardTotalPage();
     	bList.pageLa.setText(curpage+" page / "+totalpage+" pages");
     }
+    public void detailPrint(int no)
+    {
+    	FreeBoardDAO dao=
+				FreeBoardDAO.newInstance();
+		FreeBoardVO vo=
+		 dao.boardDetailData(no);
+    	bDetail.no.setText(String.valueOf(vo.getNo()));
+    	bDetail.name.setText(vo.getName());
+    	bDetail.day.setText(vo.getRegdate().toString());
+    	bDetail.hit.setText(String.valueOf(vo.getHit()));
+    	bDetail.sub.setText(vo.getSubject());
+    	bDetail.ta.setText(vo.getContent());
+    }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		try
+		{
+			UIManager.setLookAndFeel("com.jtattoo.plaf.mcwin.McWinLookAndFeel");
+		}catch(Exception ex) {}
         new BoardMainForm();
 	}
 	@Override
@@ -199,12 +221,165 @@ implements ActionListener,MouseListener
 			// 화면 이동 getContentPane():Panel관리자 
 			// => 이동시에 card이름 부여 
 		}
+		// 상세보기 => 목록 이동 
+		else if(e.getSource()==bDetail.b3)
+		{
+			card.show(getContentPane(), "LIST");
+			listPrint();
+		}
+		// 상세보기 => 수정 이동  
+		else if(e.getSource()==bDetail.b1)
+		{
+			card.show(getContentPane(), "UPDATE");
+			// 처리 => 수정 (이전 입력값)
+			FreeBoardDAO dao=
+					FreeBoardDAO.newInstance();
+			String no=bDetail.no.getText();
+			
+			FreeBoardVO vo=
+			  dao.boardUpdateData(Integer.parseInt(no));
+			// 윈도우 / 웹 => 정수개념이 없다 (무조건 문자열이다)
+			// <a href="detail.jsp?no=10">
+			// 웹 : String no=request.getParameter("no");
+			bUpdate.nameTf.setText(vo.getName());
+			bUpdate.subTf.setText(vo.getSubject());
+			bUpdate.ta.setText(vo.getContent());
+			bUpdate.pwdPf.setText("");
+		}
+		else if(e.getSource()==bUpdate.b1) // 실제 수정 
+		{
+			// DB 처리 
+			String name=bUpdate.nameTf.getText();
+			if(name.trim().length()<1)
+			{
+				// 이름이 입력이 안된 상태 
+				JOptionPane.showMessageDialog(this, 
+						"이름을 입력하세요");
+				// alert()
+				bUpdate.nameTf.requestFocus();
+				// name.focus()
+				return;
+			}
+			
+			String subject=bUpdate.subTf.getText();
+			if(subject.trim().length()<1)
+			{
+				// 이름이 입력이 안된 상태 
+				JOptionPane.showMessageDialog(this, 
+						"제목을 입력하세요");
+				// alert()
+				bUpdate.subTf.requestFocus();
+				// name.focus()
+				return;
+			}
+			
+			String content=bUpdate.ta.getText();
+			if(content.trim().length()<1)
+			{
+				// 이름이 입력이 안된 상태 
+				JOptionPane.showMessageDialog(this, 
+						"내용을 입력하세요");
+				// alert()
+				bUpdate.ta.requestFocus();
+				// name.focus()
+				return;
+			}
+			
+			String pwd=String.valueOf(bUpdate.pwdPf.getPassword());
+			if(pwd.trim().length()<1)
+			{
+				// 이름이 입력이 안된 상태 
+				JOptionPane.showMessageDialog(this, 
+						"비밀번호를 입력하세요");
+				// alert()
+				bUpdate.pwdPf.requestFocus();
+				// name.focus()
+				return;
+			}
+			
+			String no=bDetail.no.getText();
+			
+			// 데이터를 모아서 => DAO로 전송 
+			FreeBoardVO vo=new FreeBoardVO();
+			vo.setNo(Integer.parseInt(no));
+			vo.setName(name);
+			vo.setSubject(subject);
+			vo.setContent(content);
+			vo.setPwd(pwd);
+			
+			FreeBoardDAO dao=
+					FreeBoardDAO.newInstance();
+			boolean bCheck=dao.boardUpdate(vo);
+			
+			if(bCheck==true)
+			{
+				card.show(getContentPane(), "DETAIL");
+				detailPrint(Integer.parseInt(no));
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(this, 
+						"비밀번호가 틀립니다");
+				bUpdate.pwdPf.setText("");
+				bUpdate.pwdPf.requestFocus();
+			}
+			
+		}
+		else if(e.getSource()==bUpdate.b2) // 수정 취소
+		{
+			card.show(getContentPane(), "DETAIL");
+		}
+		// 상세보기 => 삭제 이동  
+		else if(e.getSource()==bDetail.b2)
+		{
+			card.show(getContentPane(), "DELETE");
+			bDelete.pf.setText("");
+			bDelete.pf.requestFocus();
+		}
+		// 실제 삭제 
+		else if(e.getSource()==bDelete.b1)
+		{
+			String no=bDetail.no.getText();
+			String pwd=String.valueOf(
+					bDelete.pf.getPassword());
+			FreeBoardDAO dao=FreeBoardDAO.newInstance();
+			boolean bCheck=
+				dao.boardDelete(Integer.parseInt(no), pwd);
+			if(bCheck==true)
+			{
+				card.show(getContentPane(), "LIST");
+				listPrint();
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(this, 
+						"비밀번호가 틀립니다");
+				bDelete.pf.setText("");
+				bDelete.pf.requestFocus();
+				
+			}
+		}
+		else if(e.getSource()==bDelete.b2)
+		{
+			card.show(getContentPane(), "DETAIL");
+		}
 	}
 	// onMouseDown
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+		if(e.getSource()==bList.table)
+		{
+			if(e.getClickCount()==2)// 더블 클릭시 
+			{
+				int row=bList.table.getSelectedRow();
+				String no=bList.model.getValueAt(row, 0).toString();
+				// 게시물 번호를 읽어온다 
+				card.show(getContentPane(), "DETAIL");
+				detailPrint(Integer.parseInt(no));
+				
+			}
+		}
 	}
 	
 	@Override
