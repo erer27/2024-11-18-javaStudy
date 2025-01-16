@@ -1,21 +1,19 @@
 package com.sist.dao;
 /*
-이름                                      널?      유형
------------------------------------------ -------- ----------------------------
-MNO                                       NOT NULL NUMBER
-CNO                                                NUMBER
-TITLE                                     NOT NULL VARCHAR2(1000)
-SIGNER                                    NOT NULL VARCHAR2(500)
-ALBUM                                     NOT NULL VARCHAR2(500)
-POSTER                                             VARCHAR2(260)
-IDCREMENT                                          NUMBER
-STATE                                              VARCHAR2(30)
-KEY                                                VARCHAR2(200)
-HIT                                                NUMBER
-*/
+ MNO  NOT NULL NUMBER
+ CNO NUMBER
+ TITLE NOT NULL VARCHAR2(1000)
+ SINGER NOT NULL VARCHAR2(500)
+ ALBUM NOT NULL VARCHAR2(500)
+ POSTER   VARCHAR2(260)
+ IDCREMENT  NUMBER
+ STATE      VARCHAR2(30)
+ KEY     VARCHAR2(200)
+ HIT      NUMBER
+ */
 public class MusicVO {
-	private int mno, cno, idcrement, hit;
-	private String title, singer, alber, poster, state, key;
+    private int mno,cno,idcrement,hit;
+    private String title,singer,album,poster,state,key;
 	public int getMno() {
 		return mno;
 	}
@@ -52,11 +50,11 @@ public class MusicVO {
 	public void setSinger(String singer) {
 		this.singer = singer;
 	}
-	public String getAlber() {
-		return alber;
+	public String getAlbum() {
+		return album;
 	}
-	public void setAlber(String alber) {
-		this.alber = alber;
+	public void setAlbum(String album) {
+		this.album = album;
 	}
 	public String getPoster() {
 		return poster;
@@ -76,5 +74,5 @@ public class MusicVO {
 	public void setKey(String key) {
 		this.key = key;
 	}
-	
+	   
 }
