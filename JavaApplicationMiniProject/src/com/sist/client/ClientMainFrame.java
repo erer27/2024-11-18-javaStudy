@@ -52,6 +52,7 @@ public class ClientMainFrame extends JFrame implements ActionListener, Runnable,
 			mf.b2.addActionListener(this); // 맛집
 			mf.b3.addActionListener(this); // 검색
 			mf.b7.addActionListener(this); // 뉴스 
+			mf.b5.addActionListener(this); // 커뮤니티
 			// Chat => Socket 
 			cp.cp.tf.addActionListener(this);
 			cp.cp.table.addMouseListener(this);
@@ -252,12 +253,16 @@ public class ClientMainFrame extends JFrame implements ActionListener, Runnable,
 			{
 				cp.card.show(cp, "DETAIL");
 			}
+			else if(e.getSource()==mf.b5)
+			{
+				cp.card.show(cp, "BLIST");
+			}
 		}
 		public void connection(MemberVO vo)
 		{
 			try
 			{
-				s=new Socket("192.168.10.110",5555);
+				s=new Socket("localhost",5555);
 				// 서버 연결 => s는 서버
 				// 서버로 전송 
 				out=s.getOutputStream();
