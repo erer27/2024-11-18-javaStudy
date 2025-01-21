@@ -10,7 +10,7 @@ import javax.swing.*;
 
 
 public class ControlPanel extends JPanel {
-	 HomePanel hp;
+	HomePanel hp;
     ChatPanel cp;
     FoodGenrePanel fgp;
     FoodFindPanel ffp;
@@ -19,6 +19,9 @@ public class ControlPanel extends JPanel {
     BoardInsert bInsert;
     BoardDetail bDetail;
     BoardUpdate bUpdate;
+    BoardReply bReply;
+    BoardDelete bDelete;
+    NewsPanel np;
     CardLayout card=new CardLayout();
     public ControlPanel()
     {
@@ -42,6 +45,22 @@ public class ControlPanel extends JPanel {
     	add("BDETAIL",bDetail);
     	bUpdate=new BoardUpdate(this);
     	add("BUPDATE",bUpdate);
+    	bReply=new BoardReply(this);
+    	add("BREPLY",bReply);
+    	bDelete=new BoardDelete(this); // => jsp(메소드) => URL주소
+    	// delete.jsp?no=10&pwd=1234 => JSP에서는 메소드를 만들 수 없다 
+    	add("BDELETE",bDelete);
+    	np=new NewsPanel(this);
+    	add("NP",np);
+    	
+    	/*
+    	 *    사용자 요청 ==> ControlPanel => 화면 이동 
+    	 *                             필요한 데이터 전송 
+    	 *                             
+    	 *    사용자 요청 ==> Controller => Model 
+    	 *                                 |=> 데이터전송
+    	 *                                화면이동(View):JSP
+    	 *    => MVC (Spring형식) 
+    	 */
     }
-    
 }

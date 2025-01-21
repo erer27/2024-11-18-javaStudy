@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="C:/JavaDev/JTattoo-1.6.13.jar"/>
 	<classpathentry kind="lib" path="C:/JavaDev/ojdbc8.jar"/>
 	<classpathentry kind="lib" path="C:/JavaDev/lombok.jar"/>
+	<classpathentry kind="lib" path="C:/JavaDev/json-simple-1.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
