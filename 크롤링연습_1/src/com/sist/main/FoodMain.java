@@ -81,6 +81,8 @@ public class FoodMain {
         		   //Elements image=doc2.select("div#id_restphoto_slides ul#id_restphoto_list_ul img");
         		   System.out.println(images);
         		   
+                   
+        		   
         		   // 데이터베이스 추가 
         		   FoodVO vo=new FoodVO();
         		   vo.setName(strName.trim());

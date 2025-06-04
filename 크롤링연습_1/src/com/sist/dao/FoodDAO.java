@@ -57,10 +57,11 @@ public class FoodDAO {
 	  {
 		  try
 		  {
+			  
 			  getConnection();
 			  String sql="INSERT INTO food_menupan "
 					   +"VALUES(fm_fno_seq.nextval,"
-					   +"?,?,?,?,?,?,?,?,?,?,?,0,?)";
+					   +"?,?,?,?,?,?,?,?,?,?,?,0,?,?)";
 			  // fno(처리) name type phone address score 
 			  // theme poster images time parking content
 			  // hit price
@@ -78,6 +79,7 @@ public class FoodDAO {
 			  ps.setString(10, vo.getParking());
 			  ps.setString(11, vo.getContent());
 			  ps.setString(12, vo.getPrice());
+			  ps.setInt(13, randomBranchNo);
 			  ps.executeUpdate();
 			  
 		  }catch(Exception ex)
