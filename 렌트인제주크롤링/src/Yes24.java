@@ -63,7 +63,7 @@ public class Yes24 {
 					releaseDate = doc.selectFirst(".gd_date").text();
 					introduce = doc.selectFirst(".txtContentText").text();
 					poster = doc.selectFirst(".bookFDummy img").attr("src");
-	            	System.out.println(poster);
+	            	System.out.println(introduce);
 		            
 				}catch(Exception e) {
 					continue;
@@ -83,39 +83,36 @@ public class Yes24 {
 }
 
 class BookVO{
-    private String title;           // 영화 제목
-    private String originalTitle;   // 원제
-    private String releaseDate;     // 개봉일자
-    private String rating;          // 등급 (예: 15세 이상 관람가)
-    private String runtime;         // 상영시간 (예: 120분)
-    private String genre;           // 장르 (예: 액션, 드라마)
-    private String director;        // 감독 이름
-    private String cast;            // 출연 배우 (콤마로 구분된 문자열 등)
-    private String synopsis;
-    private String poster;
-	public String getPoster() {
-		return poster;
-	}
-	public void setPoster(String poster) {
-		this.poster = poster;
-	}
-	public String getSynopsis() {
-		return synopsis;
-	}
-	public void setSynopsis(String synopsis) {
-		this.synopsis = synopsis;
-	}
+	String title="";
+	String auth="";
+	String price="";
+	String publisher="";
+	String releaseDate="";
+	String introduce="";
+	String poster="";
 	public String getTitle() {
 		return title;
 	}
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public String getOriginalTitle() {
-		return originalTitle;
+	public String getAuth() {
+		return auth;
 	}
-	public void setOriginalTitle(String originalTitle) {
-		this.originalTitle = originalTitle;
+	public void setAuth(String auth) {
+		this.auth = auth;
+	}
+	public String getPrice() {
+		return price;
+	}
+	public void setPrice(String price) {
+		this.price = price;
+	}
+	public String getPublisher() {
+		return publisher;
+	}
+	public void setPublisher(String publisher) {
+		this.publisher = publisher;
 	}
 	public String getReleaseDate() {
 		return releaseDate;
@@ -123,38 +120,18 @@ class BookVO{
 	public void setReleaseDate(String releaseDate) {
 		this.releaseDate = releaseDate;
 	}
-	public String getRating() {
-		return rating;
+	public String getIntroduce() {
+		return introduce;
 	}
-	public void setRating(String rating) {
-		this.rating = rating;
+	public void setIntroduce(String introduce) {
+		this.introduce = introduce;
 	}
-	public String getRuntime() {
-		return runtime;
+	public String getPoster() {
+		return poster;
 	}
-	public void setRuntime(String runtime) {
-		this.runtime = runtime;
+	public void setPoster(String poster) {
+		this.poster = poster;
 	}
-	public String getGenre() {
-		return genre;
-	}
-	public void setGenre(String genre) {
-		this.genre = genre;
-	}
-	public String getDirector() {
-		return director;
-	}
-	public void setDirector(String director) {
-		this.director = director;
-	}
-	public String getCast() {
-		return cast;
-	}
-	public void setCast(String cast) {
-		this.cast = cast;
-	}
-
-	
 	
 	
 }
@@ -162,7 +139,7 @@ class BookDAO {
 	  private Connection conn;
 	  private PreparedStatement ps;
 	  private final String URL="jdbc:mysql://localhost:3306/mydb?autoReconnection=true";
-	  private static MovieDAO dao;
+	  private static BookDAO dao;
 	  // genie/melon
 	  public BookDAO()
 	  {
@@ -171,10 +148,10 @@ class BookDAO {
 			  Class.forName("com.mysql.cj.jdbc.Driver");
 		  }catch(Exception ex) {}
 	  }
-	  public static MovieDAO newInstance()
+	  public static BookDAO newInstance()
 	  {
 		  if(dao==null)
-			  dao=new MovieDAO();
+			  dao=new BookDAO();
 		  return dao;
 	  }
 	  public void getConnection()
